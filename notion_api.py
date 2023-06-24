@@ -42,13 +42,14 @@ def get_pages(num_pages=None):
     return results
 
 
-def check_duplicate(booking_date: str, table_number: str):
+def check_duplicate(사번:str, booking_date: str, table_number: str):
     
     target = get_pages()
     df = read_as_df(target)
-    check1 = df.loc[(df["booking_date"]==booking_date)&(df["table_number"]==str(table_number))]["고유번호"].values
-    
-    if len(check1) == 0:
+    중복테이블 = df.loc[(df["booking_date"]==booking_date)&(df["table_number"]==str(table_number))]["고유번호"].values
+    중복사번 = df.loc[(df["booking_date"]==booking_date)&(df["사번"]==사번)]["고유번호"].values
+
+    if len(중복테이블) == 0 and len(중복사번) == 0:
         return True
     
     else:
@@ -56,19 +57,19 @@ def check_duplicate(booking_date: str, table_number: str):
 
 
 
-def insert_data(data: dict, booking_date, table_number):
+def insert_data(data: dict, 사번, booking_date, table_number):
     
-    if check_duplicate(booking_date, table_number):
+    if check_duplicate(사번, booking_date, table_number):
         url = 'https://api.notion.com/v1/pages'
         payload = {"parent": {"database_id": DATABASE_ID}, "properties": data}
-        # print(f"payload: {payload}")
         res = requests.post(url, json=payload, headers=headers)
         print(f"response_status_code: {res.status_code}")
-        # print(res.text)
-        return True
+        return True, st.info("입력 성공")
     else:
         print("중복데이터 입력 오류")
-        return False
+        return False, st.info("중복데이터 입력 오류")
+    
+
 
 # Function to handle booking deletion
 def delete_booking(예약번호: int, 사번: str, booking_date: str):
@@ -91,6 +92,7 @@ def delete_booking(예약번호: int, 사번: str, booking_date: str):
     except:
         print("에러 발생")
         return False
+
 
 def read_as_df(target):
     pages = target

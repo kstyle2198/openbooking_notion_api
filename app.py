@@ -5,6 +5,7 @@ import numpy as np
 import os
 from notion_api import *
 from random_splash import img_requests
+import time
 
 def date_range(start, end):
     start = datetime.strptime(start, "%Y-%m-%d")
@@ -35,13 +36,15 @@ def convert_df(df):
 def main():
     st.set_page_config(page_title="🎈OpenBooking", page_icon="11", layout="wide")
 
-
-    st.markdown("#### :green[서울 계동 ] :blue[리모트 오피스] ")
-    st.markdown('### 😜 예약 프로그램 with Notion API')
-    st.write('---')
-    topground_image = img_requests("sky")
-    if topground_image[1] > topground_image[2]:
-        st.image(topground_image[0], width=1300, caption="random images from splash")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("#### :green[서울 계동 ] :blue[리모트 오피스] ")
+        st.markdown('### 😜 예약 프로그램 with Notion API')
+    # st.write('---')
+    with col2:
+        topground_image = img_requests("sky")
+        # if topground_image[1] > topground_image[2]:
+        st.image(topground_image[0], width=400, caption="random images from splash")
 
 
     # Menu selection
@@ -60,7 +63,7 @@ def main():
     with st.expander("📢 ***주요 사항 안내***"):
         st.markdown("""
                     - 건설기계부문은 :blue[**10석**]을 배정받아 운영합니다. (사용 실적에 따라 조정)
-                    - 날짜별 미예약 테이블 넘버 현황에서 숫자가 예약 가능한 table_number 입니다. ("예약" 글자 아닌 숫자가 기재된 부분)
+                    - 미예약 테이블 현황에서 **숫자**가 예약 가능한 table_number 입니다. ("예약" 글자 아닌 숫자가 기재된 부분)
                     - 좌석번호(table_number)는 :red[***날짜별 예약가능번호***]를 의미하며, 실제 이용은 빈책상 임의 지정하여 사용하면 됩니다(완전자율좌석).
                     - Booking시 사번, 성명 정확히 입력 바랍니다. (HDX는 근태계도 상신 / 근태코드 : 리모트오피스)
                     - 동일 날짜에 1인이(동일 사번) 중복 예약 안됩니다.
@@ -68,7 +71,7 @@ def main():
                     - 기타 이용상 문의사항은 메일로 연락 바랍니다.(jongbae.kim@hyundai-genuine.com)
                     """)
     
-    tab1, tab2 = st.tabs(["🌻:blue[**예약자 리스트**]", "🍉:red[**날짜별 미예약 테이블 넘버 현황**]"])
+    tab1, tab2 = st.tabs(["🌻:blue[**예약자 리스트**]", "🍉:red[**미예약 테이블 현황**]"])
 
     with tab1:
     
@@ -145,13 +148,14 @@ def main():
             }
             
             if st.button('🖍️ Submit Booking'):
-                if len(사번) != 0 and len(name) != 0:
-                    
-                    if insert_data(data, str(booking_date), str(table_number)):
-                        st.experimental_rerun()
-                        
+                if len(사번) != 0 and len(name) != 0 and insert_data(data, str(사번), str(booking_date), str(table_number)[0]) == True:
+                    insert_data(data, str(사번), str(booking_date), str(table_number)[1])
+
                 else:
-                    print("사번 또는 성명을 입력하지 않았습니다.")
+                    pass
+                time.sleep(1)
+                st.experimental_rerun()
+                
     elif menu_choice == 'Delete Booking':
         
         with st.sidebar:
@@ -160,13 +164,12 @@ def main():
             사번 = st.text_input("☘️ 사번")
             booking_date = str(st.date_input('📆 취소할 예약 날짜', min_value=min_date, max_value=max_date))
             
-            if st.button('🗑️ Delete Booking'):
-                if delete_booking(예약번호, 사번, booking_date):
-                    print(delete_booking(예약번호, 사번, booking_date))
-                    st.experimental_rerun()
-            else:
-                None
-                # st.error('🚫 고유번호, 사번, 날짜가 일치하는 대상이 없습니다.')   
+            if st.button('🗑️ Delete Booking') == True:
+                delete_booking(예약번호, 사번, booking_date)
+                print(delete_booking(예약번호, 사번, booking_date))
+                time.sleep(1)
+                st.experimental_rerun()
+                
                            
     
     with st.sidebar:
