@@ -69,8 +69,31 @@ def main():
                     """)
     
     tab1, tab2 = st.tabs(["🍉:red[**날짜별 미예약 테이블 넘버 현황**]", "🌻:blue[**예약자 리스트**]"])
+
+    with tab1:
     
-    with tab1:       
+        search_name = st.text_input("🔎 **이름으로 조회하기 (이름 입력후 엔터)**")
+        st.dataframe(display_df(search_name), use_container_width=True)
+        
+        st.markdown("---")
+        with st.expander(""): 
+            csv = convert_df(download_df(search_name))
+            뭘까 = st.text_input("🕵️‍♂️ 다운로드", type="password")
+            download_key = os.getenv('download_key')
+            # download_key = st.secrets('download_key')
+
+            if 뭘까 == download_key:
+                val = False
+            else: 
+                val = True
+            st.download_button(
+            label="Download data as CSV",
+            data=csv,
+            file_name='download_df.csv',
+            mime='text/csv', disabled=val
+            )
+ 
+    with tab2:       
         columns = date_range(min_date.strftime('%Y-%m-%d'), max_date.strftime('%Y-%m-%d')) 
 
         data = []
@@ -100,28 +123,7 @@ def main():
                     pass
         st.dataframe(table_df)
     
-    with tab2:
-    
-        search_name = st.text_input("🔎 **이름으로 조회하기 (이름 입력후 엔터)**")
-        st.dataframe(display_df(search_name), use_container_width=True)
-        
-        st.markdown("---")
-        with st.expander(""): 
-            csv = convert_df(download_df(search_name))
-            뭘까 = st.text_input("🕵️‍♂️ 다운로드", type="password")
-            download_key = os.getenv('download_key')
-            # download_key = st.secrets('download_key')
 
-            if 뭘까 == download_key:
-                val = False
-            else: 
-                val = True
-            st.download_button(
-            label="Download data as CSV",
-            data=csv,
-            file_name='download_df.csv',
-            mime='text/csv', disabled=val
-            )
 
     if menu_choice == 'Add Booking':
         
