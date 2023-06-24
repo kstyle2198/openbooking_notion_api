@@ -3,7 +3,8 @@ from datetime import datetime, date, timedelta
 import pandas as pd
 import numpy as np
 import os
-from notion_api1 import *
+from notion_api import *
+from random_splash import img_requests
 
 def date_range(start, end):
     start = datetime.strptime(start, "%Y-%m-%d")
@@ -29,36 +30,19 @@ def display_df(name1):
 def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('utf-8-sig')
-
-
-# Function to handle new booking submission
-# def check_duplicate(사번, booking_date, table_number):
-    
-#     conn = sqlite3.connect('bookings.db')
-#     c = conn.cursor()
-#     c.execute("SELECT * FROM bookings")
-#     bookings = c.fetchall()
-    
-    
-#     cnt = 0
-#     for booking in bookings:
-#         if 사번 == booking[2] and booking_date.strftime('%Y-%m-%d') == booking[5]:  # 동일일자 중복 사번
-#             cnt += 1
-#         elif table_number == booking[4] and booking_date.strftime('%Y-%m-%d') == booking[5]:  # 동일일자 좌석번호 중복
-#             cnt += 1
-#         else:
-#             pass
-#     if cnt == 0:
-#         return True
-
      
 # Main function
 def main():
     st.set_page_config(page_title="🎈OpenBooking", page_icon="11", layout="wide")
 
-    st.markdown("#### :green[서울 계동 ]")
-    st.markdown('### 🎉 :blue[리모트 오피스] 예약 프로그램 with Notion API')
+
+    st.markdown("#### :green[서울 계동 ] :blue[리모트 오피스] ")
+    st.markdown('### 😜 예약 프로그램 with Notion API')
     st.write('---')
+    topground_image = img_requests("sky")
+    if topground_image[1] > topground_image[2]:
+        st.image(topground_image[0], width=1300, caption="random images from splash")
+
 
     # Menu selection
     menu_options = ['Add Booking', 'Delete Booking']
@@ -126,6 +110,8 @@ def main():
             csv = convert_df(download_df(search_name))
             뭘까 = st.text_input("🕵️‍♂️ 다운로드", type="password")
             download_key = os.getenv('download_key')
+            # download_key = st.secrets('download_key')
+
             if 뭘까 == download_key:
                 val = False
             else: 
@@ -157,20 +143,24 @@ def main():
             }
             
             if st.button('🖍️ Submit Booking'):
-                if insert_data(data):
-                    st.experimental_rerun()
-                
+                if len(사번) != 0 and len(name) != 0:
+                    
+                    if insert_data(data, str(booking_date), str(table_number)):
+                        st.experimental_rerun()
+                        
+                else:
+                    print("사번 또는 성명을 입력하지 않았습니다.")
     elif menu_choice == 'Delete Booking':
         
         with st.sidebar:
             st.subheader('🐼 Delete Booking')
-            고유번호 = st.text_input('☘️ 고유번호')
+            예약번호 = st.text_input('☘️ 예약번호')
             사번 = st.text_input("☘️ 사번")
             booking_date = str(st.date_input('📆 취소할 예약 날짜', min_value=min_date, max_value=max_date))
             
             if st.button('🗑️ Delete Booking'):
-                if delete_booking(고유번호, 사번, booking_date):
-                    print(delete_booking(고유번호, 사번, booking_date))
+                if delete_booking(예약번호, 사번, booking_date):
+                    print(delete_booking(예약번호, 사번, booking_date))
                     st.experimental_rerun()
             else:
                 None
@@ -181,7 +171,7 @@ def main():
         st.markdown("---")
         with st.expander("🔒 개인정보처리방침"):
             st.markdown('''
-                        - 본 프로그램상 수집하는 성명, 사번 등 개인정보는 회사의 개인정보관리규정에 따라 관리됩니다.                                           
+                        - 본 예약프로그램은 정식 예약프로그램 개발전까지 사용하는 임시 프로그램으로서, 본 프로그램상 수집하는 성명, 사번 등 개인정보는 회사의 개인정보관리규정에 따라 관리됩니다.                                           
                         ''')
 
 if __name__ == "__main__":
