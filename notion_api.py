@@ -110,8 +110,7 @@ def read_as_df(target):
         table_number =  props['table_number']['rich_text'][0]['text']['content']
         booking_date = props['booking_date']['rich_text'][0]['text']['content']
         status = props['status']['rich_text'][0]['text']['content']
-        # 고유번호 = page["id"]
-        # print(예약번호, company, 사번, name, table_number, booking_date, status, page_id)
+
         
         예약번호_list.append(예약번호)
         company_list.append(company)
@@ -144,11 +143,7 @@ if __name__ == "__main__":
         "status":  {"rich_text": [{"text": {"content": status}}]},
         }
 
-
     # insert_data(data)
-    # delete_data("8a8017c4-1199-413f-9056-6c596a4ae211")
-
     
-    # delete_booking("9f57977f-c713-4078-8cde-f87712454e1b", "A422525", "2023-06-29")
     target = get_pages()
     print(read_as_df(target))

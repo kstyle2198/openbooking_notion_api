@@ -29,21 +29,34 @@ def display_df(name1):
     return df
 
 def convert_df(df):
-    # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv().encode('utf-8-sig')
      
 # Main function
 def main():
     st.set_page_config(page_title="🎈OpenBooking", page_icon="11", layout="wide")
 
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([2,1])
     with col1:
         st.markdown("#### :green[서울 계동 ] :blue[리모트 오피스] ")
-        st.markdown('### 😜 예약 프로그램 with Notion API')
-    # st.write('---')
+        st.markdown('### 예약 프로그램 with Notion API 🎁')
+        st.write('---')
+        
+        with st.expander("📢 ***주요 안내 사항***"):
+            st.markdown("""
+                    - 건설기계부문은 :blue[**10석**]을 배정받아 운영합니다. (사용 실적에 따라 조정)
+                    - 미예약 테이블 현황에서 **숫자**가 예약 가능한 table_number 입니다.
+                    - 좌석번호(table_number)는 :red[***날짜별 예약가능 T/O***]를 의미하며, 
+                      실제 이용은 빈책상 임의 지정하여 사용하면 됩니다(완전자율좌석).
+                    - Booking시 사번, 성명 정확히 입력 바랍니다. (HDX는 근태계도 상신 / 근태코드 : 리모트오피스)
+                    - 동일 날짜에 1인이(동일 사번) 중복 예약 안됩니다.
+                    - 리모트오피스 :blue[**위치, 출입, 식사**] 등 이용 관련 안내사항은 
+                      사이드바 상단의 :green[노션 안내자료] 참고 바랍니다.
+                    - 기타 이용상 문의사항은 메일로 연락 바랍니다.(jongbae.kim@hyundai-genuine.com)
+                    """)
+        
+        
     with col2:
         topground_image = img_requests("sky")
-        # if topground_image[1] > topground_image[2]:
         st.image(topground_image[0], width=400, caption="random images from splash")
 
 
@@ -60,16 +73,6 @@ def main():
     max_date = min_date + interval
     
     # 본문
-    with st.expander("📢 ***주요 사항 안내***"):
-        st.markdown("""
-                    - 건설기계부문은 :blue[**10석**]을 배정받아 운영합니다. (사용 실적에 따라 조정)
-                    - 미예약 테이블 현황에서 **숫자**가 예약 가능한 table_number 입니다. ("예약" 글자 아닌 숫자가 기재된 부분)
-                    - 좌석번호(table_number)는 :red[***날짜별 예약가능번호***]를 의미하며, 실제 이용은 빈책상 임의 지정하여 사용하면 됩니다(완전자율좌석).
-                    - Booking시 사번, 성명 정확히 입력 바랍니다. (HDX는 근태계도 상신 / 근태코드 : 리모트오피스)
-                    - 동일 날짜에 1인이(동일 사번) 중복 예약 안됩니다.
-                    - 리모트오피스 :blue[**위치, 출입, 식사**] 등 이용 관련 안내사항은 사이드바 상단의 :green[노션 안내자료] 참고 바랍니다.
-                    - 기타 이용상 문의사항은 메일로 연락 바랍니다.(jongbae.kim@hyundai-genuine.com)
-                    """)
     
     tab1, tab2 = st.tabs(["🌻:blue[**예약자 리스트**]", "🍉:red[**미예약 테이블 현황**]"])
 
@@ -83,7 +86,6 @@ def main():
             csv = convert_df(download_df(search_name))
             뭘까 = st.text_input("🕵️‍♂️ 다운로드", type="password")
             download_key = os.getenv('download_key')
-            # download_key = st.secrets('download_key')
 
             if 뭘까 == download_key:
                 val = False
