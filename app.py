@@ -65,7 +65,7 @@ def main():
     menu_options = ['Add Booking', 'Delete Booking']
     with st.sidebar:
         st.header("🔅 **예약 및 취소는 사이드바에서!**")
-        st.markdown("##### ***:green[📒 노션안내자료]*** : [link](https://www.notion.so/hyundaigenuine/3c5b039fe44f4eb0a303dc25dcb14cab?pvs=4)")
+        st.markdown("##### ***:green[📒 노션안내자료]*** : [link](https://www.notion.so/xitesolution/3e30de34864f4a478d7a67b05f5655d3?pvs=4)")
         menu_choice = st.sidebar.selectbox('🚀 **:blue[Select Menu]**', menu_options)
     
     # 예약 날짜 구간
