@@ -51,7 +51,7 @@ def main():
                     - 동일 날짜에 1인이(동일 사번) 중복 예약 안됩니다.
                     - 리모트오피스 :blue[**위치, 출입, 식사**] 등 이용 관련 안내사항은 
                       사이드바 상단의 :green[노션 안내자료] 참고 바랍니다.
-                    - 기타 이용상 문의사항은 메일로 연락 바랍니다.(jongbae.kim@hyundai-genuine.com)
+                    - 기타 이용상 문의사항은 메일로 연락 바랍니다.(yeongho.yun@hyundai-genuine.com)
                     """)
         
         
