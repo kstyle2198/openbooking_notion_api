@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import os
 from notion_api import *
-from random_splash import img_requests, new_requests
+# from random_splash import img_requests, new_requests
 import time
 
 def date_range(start, end):
@@ -55,10 +55,10 @@ def main():
                     """)
         
         
-    with col2:
+    # with col2:
         # topground_image = img_requests("sky")
-        topground_image = new_requests("sky")
-        st.image(topground_image, width=400, caption="random images from unsplash")
+        # topground_image = new_requests("sky")
+        # st.image(topground_image, width=400, caption="random images from unsplash")
 
 
     # Menu selection
